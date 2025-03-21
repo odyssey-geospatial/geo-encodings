@@ -1,3 +1,4 @@
-# odyssey-geo
+# geo-encodings
 
-Geospatial Tools For Machine Learning and Artificial Intelligence
+Embeddings for geometric objects
+

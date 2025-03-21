@@ -1,6 +1,6 @@
 [project]
-name = "odyssey-geo"
-description = "Geospatial tools for machine learning and artificial intelligence"
+name = "geo-encodings"
+description = "Encodings for geometric objects"
 authors = [
     {name = "John Collins", email = "john@odyssey-geospatial.com"}
 ]
