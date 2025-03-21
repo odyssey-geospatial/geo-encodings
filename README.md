@@ -1,3 +1,3 @@
-# geo-encodings
-Encodings for geometric objects
+# odyssey-geo
 
+Geospatial Tools For Machine Learning and Artificial Intelligence

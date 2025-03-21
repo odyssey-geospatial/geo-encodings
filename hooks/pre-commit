@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# [JC] This strips the content out of any jupyter notebook before committing.
+# For the record this script gets invoked by `git commit` automatically.
+# To get this file to be carried along with the repo (i.e. not ignored during commits), 
+# it needs to be somewhere other than the .git folder, which is why I'm putting it
+# here. But then to get it to work you need to set your global got config to include
+# "core.hookspath=hooks". You can do that by editing .gitconfig in your home directory
+# to include these lines:
+#
+# [core]
+# hooksPath = hooks
+#
+
+git diff --cached --name-only --diff-filter=ACM | grep '\.ipynb$' | while read notebook; do
+    echo "*** stripping output from $notebook (script .hooks/pre-commit)"
+    echo "copying original $notebook to keep/"
+    cp $notebook keep
+    jupyter nbconvert --clear-output --inplace "$notebook"
+    git add "$notebook"
+done
+

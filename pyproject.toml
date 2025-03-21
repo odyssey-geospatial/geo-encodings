@@ -1,0 +1,21 @@
+[project]
+name = "odyssey-geo"
+description = "Geospatial tools for machine learning and artificial intelligence"
+authors = [
+    {name = "John Collins", email = "john@odyssey-geospatial.com"}
+]
+version = "0.0.1"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = [
+    "geospatial", "artificial intelligence", "machine learning", "embeddings"
+]
+dependencies = [
+    "shapely"
+]
+
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+
