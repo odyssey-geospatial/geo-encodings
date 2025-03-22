@@ -52,9 +52,16 @@ The `geo-encodings` package implements a few different ways to encode shapes.
 
 ### Multi-Point Proximity (MPP) Encoding
 
-MPP encoding involves laying out a grid of reference points over a rectangular domain,
-and then for a given shape, compute its distance to each reference point, where "distance" is the Euclidean distance between the reference point and the closest point of the shape. 
-The apply negative exponential scaling to the distances.  
+MPP encoding involves laying out a grid of reference points 
+$\bf{r} = \{r_i: i \in [1..n]\}$
+over a rectangular domain.
+Then for a given shape $\bf{g}$, compute its distance to each reference point, 
+where "distance" is the Euclidean distance $d_i$ between the reference point and the closest point of the shape. 
+The apply negative exponential scaling to the distances:
+$$
+e = {e_i \exp(-d_i / s): i \in [1 .. n]}
+$$
+where $s$ is the `scale` parameter of the MPP encoder.
 
 ### Discrete Indicator Vector (DIV) Encoding
 
@@ -62,12 +69,12 @@ DIV encoding involves dividing a given domain into non-overlapping square "tiles
 An encoding for a shape is an indicator vector (0 or 1) indicating which tiles 
 it intersects.  
 
-### Partial Coverage Fraction (PCE) encoding
+### Partial Coverage Fraction (PCF) encoding
 
 PCE encoding is similar to DIV encoding in that it divides a domain into 
 non-overlapping tiles. But instead of an indicator vector, the encoded values are computes differently for different geometry types.
 * For Point and MultiPoint types, the encoding is an indicator vector: 1 if a point falls into a give tile, or 0 otherwise.
-* For LineString and MultiLineString types, the encoding is  given by 
+* For LineString and MultiLineString types, the encoding is given by 
 $e = z / r$ where $z$ is the length of the geometry that
 intersects the tile, and $r$ is the `resolution` parameter.
 * For Polygon and MultiPolygon type, the encoding is
@@ -90,17 +97,8 @@ pip install geo-encodings
 
 ## Contributing
 
-1. Fork it (https://github.com/yourname/yourproject/fork)
+1. Fork the repo (https://github.com/yourname/yourproject/fork)
 2. Create your feature branch (git checkout -b feature/fooBar)
 3. Commit your changes (git commit -am 'Add some fooBar')
 4. Push to the branch (git push origin feature/fooBar)
 5. Create a new Pull Request
-
-
-
-
-
-
-
-
-
