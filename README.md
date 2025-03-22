@@ -53,7 +53,7 @@ The `geo-encodings` package implements a few different ways to encode shapes.
 ### Multi-Point Proximity (MPP) Encoding
 
 MPP encoding involves laying out a grid of reference points 
-$\bf{r} = \{r_i: i \in [1..n]\}$
+$\bf{r} = {r_i: i \in [1..n]}$
 over a rectangular domain.
 Then for a given shape $\bf{g}$, compute its distance $d_i$ to each reference point, 
 where "distance" is the Euclidean distance between the reference point and the closest point of the shape. 
