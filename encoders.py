@@ -92,7 +92,7 @@ class MPPEncoder:
         ]
         self.ref_x = ref_x
         self.ref_y = ref_y
-        self.ref_index = np.arange(len(self.ref_points))
+        self.ref_index = np.arange(self.n_ref)
 
         # This parameter gives the value below which encoding loadings will be
         # set to zero.
