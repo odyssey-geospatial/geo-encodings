@@ -58,9 +58,7 @@ over a rectangular domain.
 Then for a given shape $\bf{g}$, compute its distance $d_i$ to each reference point, 
 where "distance" is the Euclidean distance between the reference point and the closest point of the shape. 
 The apply negative exponential scaling to the distances:
-$
-e = {e_i \exp(-d_i / s): i \in [1 .. n]}
-$
+$e = {e_i \exp(-d_i / s): i \in [1 .. n]}$
 where $s$ is the `scale` parameter of the MPP encoder.
 
 ### Discrete Indicator Vector (DIV) Encoding
