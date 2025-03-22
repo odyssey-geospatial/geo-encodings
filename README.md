@@ -12,9 +12,10 @@ Eventually you will run into the problem that most Machine Learning tools --
 classifiers, regression models, neural networks -- are not built to ingest these
 standard geometric objects. That's where this package comes in.
 
-The `geo-encodings` package implements a few different methods for turning 
-arbitrary geometric objects into vectors that encode the essential 
-features of their structure. Here's a quick example of its use.
+The `geo-encodings` package turns 
+arbitrary geometric objects into vectors that give an
+approximate encoding of their essential spatial structure.
+Here's a quick example of its use.
 
 ```python
 from geo_encodings.encoders import MPPEncoder
@@ -37,11 +38,11 @@ print(e.values())
 You have just defined a 25-element vector that encodes the Point location
 (x = 23, y = 37) within a square domain (lower left = (0, 0), upper right = (100, 100)).
 
-So why bother encoding two numbers as a 25-element vector?
+So why bother encoding a coordinate pair as a 25-element vector?
 
-- The vector can be fed to most machine learning models; 'POINT(23, 37)' can not.
+- The vector can be fed to most machine learning models; `POINT(23, 37)` can not.
 - The exact same operation works for all other types of geometries: LineString, Polygon, MultiPoint, MultiLineString, and MultiPolygon.
-- In other words, *any* geometric object can be represented using a consistent format -- a vector of a given size -- within a given domain.
+- In other words, *any* geometric object in a given domain can be represented using a consistent format -- a vector of a given size.
 
 That is, this lets you feed shapes to machine learning models. 
 
@@ -67,10 +68,10 @@ PCE encoding is similar to DIV encoding in that it divides a domain into
 non-overlapping tiles. But instead of an indicator vector, the encoded values are computes differently for different geometry types.
 * For Point and MultiPoint types, the encoding is an indicator vector: 1 if a point falls into a give tile, or 0 otherwise.
 * For LineString and MultiLineString types, the encoding is  given by 
-$e = z / "resolution"$ where $z$ is the length of the geometry that
-intersects the tile.
+$e = z / r$ where $z$ is the length of the geometry that
+intersects the tile, and $r$ is the `resolution` parameter.
 * For Polygon and MultiPolygon type, the encoding is
-$z / "resolution"^2$, where $z$ is the area of overlap between the shape
+$z / r^2$, where $z$ is the area of overlap between the shape
 and the tile. 
 
 ## Installation
