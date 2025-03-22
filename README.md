@@ -55,12 +55,12 @@ The `geo-encodings` package implements a few different ways to encode shapes.
 MPP encoding involves laying out a grid of reference points 
 $\bf{r} = \{r_i: i \in [1..n]\}$
 over a rectangular domain.
-Then for a given shape $\bf{g}$, compute its distance to each reference point, 
-where "distance" is the Euclidean distance $d_i$ between the reference point and the closest point of the shape. 
+Then for a given shape $\bf{g}$, compute its distance $d_i$ to each reference point, 
+where "distance" is the Euclidean distance between the reference point and the closest point of the shape. 
 The apply negative exponential scaling to the distances:
-$$
+$
 e = {e_i \exp(-d_i / s): i \in [1 .. n]}
-$$
+$
 where $s$ is the `scale` parameter of the MPP encoder.
 
 ### Discrete Indicator Vector (DIV) Encoding
