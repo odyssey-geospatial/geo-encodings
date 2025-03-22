@@ -2,7 +2,7 @@
 
 # geo-encodings
 
-	Positional encodings for geometric objects
+### Positional encodings for geometric objects
 	
 If you do geospatial analysis,
 you probably deal with geometric objects of type Point LineString, and Polygon 
@@ -51,15 +51,27 @@ The `geo-encodings` package implements a few different ways to encode shapes.
 
 ### Multi-Point Proximity (MPP) Encoding
 
-bc
+MPP encoding involves laying out a grid of reference points over a rectangular domain,
+and then for a given shape, compute its distance to each reference point, where "distance" is the Euclidean distance between the reference point and the closest point of the shape. 
+The apply negative exponential scaling to the distances.  
 
 ### Discrete Indicator Vector (DIV) Encoding
 
-abc
+DIV encoding involves dividing a given domain into non-overlapping square "tiles".
+An encoding for a shape is an indicator vector (0 or 1) indicating which tiles 
+it intersects.  
 
 ### Partial Coverage Fraction (PCE) encoding
 
-abc
+PCE encoding is similar to DIV encoding in that it divides a domain into 
+non-overlapping tiles. But instead of an indicator vector, the encoded values are computes differently for different geometry types.
+* For Point and MultiPoint types, the encoding is an indicator vector: 1 if a point falls into a give tile, or 0 otherwise.
+* For LineString and MultiLineString types, the encoding is  given by 
+$e = z / "resolution"$ where $z$ is the length of the geometry that
+intersects the tile.
+* For Polygon and MultiPolygon type, the encoding is
+$z / "resolution"^2$, where $z$ is the area of overlap between the shape
+and the tile. 
 
 ## Installation
 
@@ -67,9 +79,25 @@ abc
 pip install geo-encodings
 ```
 
+## Release History
 
- 
-- The vector captures all or most of the relevant information
+* 1.0.0: Coming soon
+
+## Author and maintainers
+
+* John Collins -- `john@odyssey-geospatial.com`
+
+## Contributing
+
+1. Fork it (https://github.com/yourname/yourproject/fork)
+2. Create your feature branch (git checkout -b feature/fooBar)
+3. Commit your changes (git commit -am 'Add some fooBar')
+4. Push to the branch (git push origin feature/fooBar)
+5. Create a new Pull Request
+
+
+
+
 
 
 
