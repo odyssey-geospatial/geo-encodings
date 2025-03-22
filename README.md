@@ -1,6 +1,7 @@
-![image](images/example-image.png)
 
 # geo-encodings
+
+![Multi-Point Proximity encodings for all shape types](images/mpp-encodings-6.png)
 
 ### Positional encodings for geometric objects
 	
