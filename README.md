@@ -1,4 +1,4 @@
-![image][images/example-image.png]
+![image](images/example-image.png)
 
 # geo-encodings
 
