@@ -5,9 +5,9 @@
 
 ### Positional encodings for geometric objects
 	
-A lot of spatial analysis deals with
+Spatial analysis deals with
 geometric objects of type Point LineString, and Polygon; 
-plus groupings of multiple instances of these objects: MultiPoint, 
+plus types representing collections of these objects: MultiPoint, 
 MultiLineString, and MultiPolygon. 
 Unfortunately most Machine Learning (ML) tools --
 classifiers, regression models, neural networks -- 
@@ -45,7 +45,9 @@ upper right = (100, 100)).
 
 So why bother encoding a coordinate pair as a 25-element vector?
 Mostly because the vector can be fed to most machine learning models,
-where the string `"POINT(23, 37)"` typically can not.
+where the string `"POINT(23, 37)"` typically can not
+(unless we are talking about certain Large Language Models (LLMS), 
+which are a whole other story).
 And importantly, the exact same operation works for all other types of geometries: 
 LineString, Polygon, MultiPoint, MultiLineString, and MultiPolygon.
 In other words, *any* geometric object in a given domain can be represented 
