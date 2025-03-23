@@ -86,6 +86,11 @@ intersects the tile, and $r$ is the `resolution` parameter.
 $z / r^2$, where $z$ is the area of overlap between the shape
 and the tile. 
 
+## Supporting packages
+
+* `shapely`: Provides computations on geometric objects.
+* `scipy`: Provides tools for handling sparse arrays.
+
 ## Installation
 
 ```python
