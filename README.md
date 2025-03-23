@@ -1,7 +1,7 @@
 
 # geo-encodings
 
-![Multi-Point Proximity encodings for all shape types](images/mpp-encodings-6.png)
+![Multi-Point Proximity encodings for all shape types](images/mpp-encodings-6.jpg)
 
 ### Positional encodings for geometric objects
 	
