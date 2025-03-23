@@ -5,25 +5,28 @@
 
 ### Positional encodings for geometric objects
 	
-If you do geospatial analysis,
-you probably deal with geometric objects of type Point LineString, and Polygon 
-(in addition to aggregated versions of these objects: MultiPoint, 
-MultiLineString, and MultiPolygon). 
-Eventually you will run into the problem that most Machine Learning tools --
-classifiers, regression models, neural networks -- are not built to ingest these
-standard geometric objects. That's where this package comes in.
+A lot of spatial analysis deals with
+geometric objects of type Point LineString, and Polygon; 
+plus groupings of multiple instances of these objects: MultiPoint, 
+MultiLineString, and MultiPolygon. 
+Unfortunately most Machine Learning (ML) tools --
+classifiers, regression models, neural networks -- 
+are not built to ingest geometric objects 
+in their native format. That's where this package comes in.
 
 The `geo-encodings` package turns 
-arbitrary geometric objects into vectors that give an
-approximate encoding of their essential spatial structure.
+arbitrary geometric objects into vectors that approximately encode
+their shape and location.
 Here's a quick example of its use.
 
 ```python
-from geo_encodings.encoders import MPPEncoder
-encoder = MPPEncoder(domain=[0, 0, 100, 100], resolution=20)
-
+# Define a Point object using the `shapely` package.
 import shapely
 g = shapely.from_wkt('POINT(23 37)')
+
+# Get an encoding of that point.
+from geo_encodings.encoders import MPPEncoder
+encoder = MPPEncoder(domain=[0, 0, 100, 100], resolution=20)
 e = encoder.encode(g)
 print(e.values())
 
@@ -36,14 +39,17 @@ print(e.values())
  0.03496679 0.04269944 0.03828613 0.02591118 0.01429364 0.00691243]
 ```
 
-You have just defined a 25-element vector that encodes the Point location
-(x = 23, y = 37) within a square domain (lower left = (0, 0), upper right = (100, 100)).
+We just defined a 25-element vector that encodes the Point location
+(x = 23, y = 37) within a square domain (lower left = (0, 0), 
+upper right = (100, 100)).
 
 So why bother encoding a coordinate pair as a 25-element vector?
-
-- The vector can be fed to most machine learning models; `POINT(23, 37)` can not.
-- The exact same operation works for all other types of geometries: LineString, Polygon, MultiPoint, MultiLineString, and MultiPolygon.
-- In other words, *any* geometric object in a given domain can be represented using a consistent format -- a vector of a given size.
+Mostly because the vector can be fed to most machine learning models,
+where the string `"POINT(23, 37)"` typically can not.
+And importantly, the exact same operation works for all other types of geometries: 
+LineString, Polygon, MultiPoint, MultiLineString, and MultiPolygon.
+In other words, *any* geometric object in a given domain can be represented 
+using a consistent format -- a vector of a given size.
 
 That is, this lets you feed shapes to machine learning models. 
 
