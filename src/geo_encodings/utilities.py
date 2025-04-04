@@ -1,12 +1,20 @@
-#
-# Visualizations for geometries.
-# These are designed to work with "plotly". They add shapes to a given figure subplot.
-#
-
 import plotly
 from plotly.graph_objects import Scatter
 
-def px_draw(geom, fig, irow=1, icol=1, color='blue'):
+def draw_shape(geom, fig, irow=1, icol=1, color='blue', name='shape', markersize=10, linewidth=5):
+    """
+    Add a shape to a plotly figure
+    
+    Args:
+    	geom: A geometry object.
+    	fig: Handle of a plotly figure.
+    	irow: Subplot row.
+    	icol: Subplot column.
+    	color: Color to use.
+    	name: Name to use in the plot legend.
+    	
+    This function adds a `shapely.Geometry` object to a `plotly` plot.
+    """
 
     gt = geom.geom_type
 
@@ -14,8 +22,8 @@ def px_draw(geom, fig, irow=1, icol=1, color='blue'):
         xx = [geom.xy[0][0]]
         yy = [geom.xy[1][0]]
         trace = Scatter(
-            x=xx, y=yy, name=gt, 
-            mode='markers', marker={'color': color, 'size': 12}
+            x=xx, y=yy, name=name, 
+            mode='markers', marker={'color': color, 'size': markersize}
         )
         fig.append_trace(trace, irow, icol)
         
@@ -23,8 +31,8 @@ def px_draw(geom, fig, irow=1, icol=1, color='blue'):
         xx = [z.xy[0][0] for z in geom.geoms]
         yy = [z.xy[1][0] for z in geom.geoms]
         trace = Scatter(
-            x=xx, y=yy, name=gt, 
-            mode='markers', marker={'color': color, 'size': 12}
+            x=xx, y=yy, name=name, 
+            mode='markers', marker={'color': color, 'size': markersize}
         )
         fig.append_trace(trace, irow, icol)
         
@@ -33,8 +41,9 @@ def px_draw(geom, fig, irow=1, icol=1, color='blue'):
         xx = [z[0] for z in coords]
         yy = [z[1] for z in coords]
         trace = Scatter(
-            x=xx, y=yy, name=gt, 
-            mode='lines', marker={'color': color, 'size': 12}
+            x=xx, y=yy, name=name, 
+            mode='lines', marker={'color': color, 'size': markersize},
+            line={'width': linewidth}
         )
         fig.append_trace(trace, irow, icol)
         
@@ -46,8 +55,9 @@ def px_draw(geom, fig, irow=1, icol=1, color='blue'):
             xx += [z[0] for z in coords] + [None]
             yy += [z[1] for z in coords] + [None]
         trace = Scatter(
-            x=xx, y=yy, name=gt, 
-            mode='lines', marker={'color': color, 'size': 12}
+            x=xx, y=yy, name=name, 
+            mode='lines', marker={'color': color, 'size': markersize},
+            line={'width': linewidth}
         )
         fig.append_trace(trace, irow, icol)
 
@@ -56,7 +66,7 @@ def px_draw(geom, fig, irow=1, icol=1, color='blue'):
         xx = [z[0] for z in coords]
         yy = [z[1] for z in coords]
         trace = Scatter(
-            x=xx, y=yy, name=gt, 
+            x=xx, y=yy, name=name, 
             mode='lines', marker={'color': color}, fill='toself'
         )
         fig.append_trace(trace, irow, icol)
@@ -68,7 +78,7 @@ def px_draw(geom, fig, irow=1, icol=1, color='blue'):
             xx = [z[0] for z in coords]
             yy = [z[1] for z in coords]
             trace =Scatter(
-                x=xx, y=yy, name=gt, 
+                x=xx, y=yy, name=name, 
                 mode='lines', marker={'color': color}, fill='toself'
             )
             fig.append_trace(trace, irow, icol)
@@ -94,6 +104,4 @@ def _holy_polygon(geom):
         marker={'color': 'red'}
     )
     fig.append_trace(trace, irow, 1)
-
-    
 
