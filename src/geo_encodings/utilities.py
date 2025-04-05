@@ -1,9 +1,10 @@
+import shapely
 import plotly
 from plotly.graph_objects import Scatter
 
-def draw_shape(geom, fig, irow=1, icol=1, color='blue', name='shape', markersize=10, linewidth=5):
+def draw_shape(geom:shapely.geometry, fig:plotly.graph_objs._figure.Figure, irow:int=1, icol:int=1, color:str='blue', name:str='shape', markersize:int=10, linewidth:int=5):
     """
-    Add a shape to a plotly figure
+    Add a shape to a plotly figure.
     
     Args:
     	geom: A geometry object.
@@ -12,6 +13,8 @@ def draw_shape(geom, fig, irow=1, icol=1, color='blue', name='shape', markersize
     	icol: Subplot column.
     	color: Color to use.
     	name: Name to use in the plot legend.
+        markersize: Size of any points to be drawn.
+        linewidth: Width of any lines to be drawn.
     	
     This function adds a `shapely.Geometry` object to a `plotly` plot.
     """

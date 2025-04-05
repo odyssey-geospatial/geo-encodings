@@ -4,14 +4,16 @@ description = "Encodings for geometric objects"
 authors = [
     {name = "John Collins", email = "john@odyssey-geospatial.com"}
 ]
-version = "0.0.1"
+version = "1.0.0"
 readme = "README.md"
 license = {file = "LICENSE"}
 keywords = [
     "geospatial", "artificial intelligence", "machine learning", "embeddings"
 ]
 dependencies = [
-    "shapely"
+    "shapely",
+    "scipy", 
+    "numpy"
 ]
 
 [build-system]

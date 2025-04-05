@@ -12,9 +12,14 @@ class GeoEncoding:
     An encoding for a geometric object.
 
     Implementation note: The encoding is stored internally essentially as a set of
-    indices of non-zero elements, and a set of the values st those indices. That is,
+    indices of non-zero elements, and a set of the values of those indices. That is,
     the components of a sparse vector. These can be returned either as a scipy sparse
     vector or as a numpy dense vector as desired.
+
+    Args:
+        encoder: The encoder object that produced the data
+        indices: Indices of non-zero elements of the encoding
+        values: Values of the non-zero elements of the encoding
     """
     
     def __init__(self, encoder, indices, values):
@@ -41,42 +46,39 @@ class GeoEncoding:
 class MPPEncoder:
 
     """
-    A class that generates Multi-Point Proximity (MPP) encodings for arbitrary geometries
+    A class that generates Multi-Point Proximity (MPP) encodings for arbitrary geometries.
+
+    This implementation of the MPP concept works with a grid of equally spaced points
+    covering a rectangular region.
+    
+    Args:
+        region:
+            [x0, y0, x1, y1]: coordinates of the lower-left and upper-right
+            corners of a rectangular area.
+        resolution:
+            The spacing between the reference points.
+        scale:
+            Factor for the distance weighting function.
+            Default: equal to "resolution".
+        center:
+            If False (the default), then the initial point will be at coordinate (x0, y0).
+            If True, then the initial point will be at (x0 + resolution / 2, y0 + resolution / 2),
+            i.e. the center of a box of dimension "resolution".
+        floor:
+            If an encoding is less than this value, it will be set to zero. This lets
+            us treat the encoding as a sparse vector. Default is zero.
+    
     """
 
-    def __init__(self, domain, resolution, scale=None, center=False, floor=0.0):
-
-        """Initializes a MPPEncodier object.
-
-        Creates an object that can be used to create encodings for arbitrary
-        spaital objects. It will consist of a regular grid of reference points across
-        a rectangular domain.
-
-        Args:
-            domain:
-                [x0, y0, x1, y1]: coordinates of the lower-left and upper-right
-                corners of a rectangular area.
-            resolution:
-            	The spacing between the reference points.
-            scale:
-                Factor for the distance weighting function.
-                Default: equal to "resolution".
-            center:
-                If False (the default), then the initial point will be at coordinate (x0, y0).
-                If True, then the initial point will be at (x0 + resolution / 2, y0 + resolution / 2),
-                i.e. the center of a box of dimension "resolution".
-            floor:
-            	If an encoding is less than this value, it will be set to zero. This lets
-            	us treat the encoding as a sparse vector.
-        """
+    def __init__(self, region:list[float], resolution:float, scale:float=None, center:bool=False, floor:float=0.0):
 
         # Collect the initialization parameters and do some rudimentary
         # calculations and re-formatting.
-        self.x0, self.y0, self.x1, self.y1 = domain
+        self.x0, self.y0, self.x1, self.y1 = region
         self.resolution = resolution
         self.scale = self.resolution if scale is None else scale
 
-        # Create the list of ref points for this domain.
+        # Create the list of reference points for this region.
         offset = resolution / 2.0 if center else 0.0
         eps = self.resolution * 0.1
         xx = np.arange(self.x0 + offset, self.x1 + eps, self.resolution)
@@ -94,56 +96,52 @@ class MPPEncoder:
         self.ref_y = ref_y
         self.ref_index = np.arange(len(self.ref_points))
 
-        # This parameter gives the value below which encoding loadings will be
+        # This parameter gives the value below which encoding elements will be
         # set to zero.
         self.floor = floor
 
     def __len__(self):
         return len(self.ref_points)
 
-    def encode(self, shape):
+    def encode(self, shape:shapely.Geometry) -> GeoEncoding:
         """
         Return a MPP encoding for a shape.
+        
+        Args:
+            shape: the shape to be encoded
         """
 
-        # Get the loadings for each point.
-        loadings = np.array([
+        # Get the encoded values for each point.
+        values = np.array([
             np.exp(-1.0 * shape.distance(ref_point) / self.scale)
             for ref_point in self.ref_points
         ])
 
-        # Create the encoding using only points whose value exceeds the threshold.
-        iok = loadings > self.floor
-        e = GeoEncoding(self, self.ref_index[iok], loadings[iok])
+        # Create the encoding using only elements whose value exceeds the threshold.
+        iok = values > self.floor
+        e = GeoEncoding(self, self.ref_index[iok], values[iok])
         return e
 
 
 class DIVEncoder:
 
     """
-    A class that generates Discrete Indicator Vector (DIV) encodings for arbitrary geometries
+    A class that generates Discrete Indicator Vector (DIV) encodings for arbitrary geometries.
+
+    This implementation of the DIV encoding concept works with square tiles that cover
+    a rectangular region.
+
+    Args:
+        region: [x0, y0, x1, y1]: Coordinates of the lower-left and upper-right corners of a rectangular region.
+        resolution: The size of the (square) tiles dividing the region.
     """
 
-    def __init__(self, domain, resolution):
+    def __init__(self, region:list[float], resolution:float):
 
-        """Initializes a DIVEncoder object.
-
-        Creates an object that can be used to create encodings for arbitrary
-        spaital objects. The encoding is relative to a tiling of a domain into
-        discrete square tiles. An encoding for an object consists of an indcator
-        vector indicating which tiles intersect the object.
-
-        Args:
-            domain:
-                [x0, y0, x1, y1]: coordinates of the lower-left and upper-right
-                corners of a rectangular area.
-            resolution:
-            	The size of the (square) tiles dividing the domain.
-        """
 
         # Collect the initialization parameters and do some rudimentary
         # calculations and re-formatting.
-        self.x0, self.y0, self.x1, self.y1 = domain
+        self.x0, self.y0, self.x1, self.y1 = region
         self.resolution = resolution
 
         # Create a list of tiles.
@@ -166,9 +164,12 @@ class DIVEncoder:
     def __len__(self):
         return len(self.tiles)
 
-    def encode(self, geom):
+    def encode(self, shape:shapely.Geometry) -> GeoEncoding:
         """
         Return a DIV encoding for a shape.
+
+        Args:
+            shape: The shape to be encoded.
         """
         indicators = np.array([
             1.0 if shapely.intersects(geom, tile) else 0.0
