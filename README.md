@@ -7,9 +7,9 @@
 	
 Spatial analysis deals with
 geometric objects of type Point LineString, and Polygon; 
-plus types representing collections of these objects: MultiPoint, 
+plus multipart extensions: MultiPoint, 
 MultiLineString, and MultiPolygon. 
-Unfortunately most Machine Learning (ML) tools --
+Most Machine Learning (ML) tools --
 classifiers, regression models, neural networks -- 
 are not built to ingest geometric objects 
 in their native format. That's where this package comes in.
@@ -26,7 +26,7 @@ g = shapely.from_wkt('POINT(23 37)')
 
 # Get an encoding of that point.
 from geo_encodings.encoders import MPPEncoder
-encoder = MPPEncoder(domain=[0, 0, 100, 100], resolution=20)
+encoder = MPPEncoder(region=[0, 0, 100, 100], resolution=20)
 e = encoder.encode(g)
 print(e.values())
 
@@ -40,7 +40,7 @@ print(e.values())
 ```
 
 We just defined a 25-element vector that encodes the Point location
-(x = 23, y = 37) within a square domain (lower left = (0, 0), 
+(x = 23, y = 37) within a square region (lower left = (0, 0), 
 upper right = (100, 100)).
 
 So why bother encoding a coordinate pair as a 25-element vector?
@@ -50,10 +50,8 @@ where the string `"POINT(23, 37)"` typically can not
 which are a whole other story).
 And importantly, the exact same operation works for all other types of geometries: 
 LineString, Polygon, MultiPoint, MultiLineString, and MultiPolygon.
-In other words, *any* geometric object in a given domain can be represented 
-using a consistent format -- a vector of a given size.
-
-That is, this lets you feed shapes to machine learning models. 
+In other words, *any* geometric object in the region can be represented 
+in the same form: a vector of aparticular size.
 
 ## Supported encoding models
 
@@ -76,18 +74,6 @@ DIV encoding involves dividing a given domain into non-overlapping square "tiles
 An encoding for a shape is an indicator vector (0 or 1) indicating which tiles 
 it intersects.  
 
-### Partial Coverage Fraction (PCF) encoding
-
-PCE encoding is similar to DIV encoding in that it divides a domain into 
-non-overlapping tiles. But instead of an indicator vector, the encoded values are computes differently for different geometry types.
-* For Point and MultiPoint types, the encoding is an indicator vector: 1 if a point falls into a give tile, or 0 otherwise.
-* For LineString and MultiLineString types, the encoding is given by 
-$e = z / r$ where $z$ is the length of the geometry that
-intersects the tile, and $r$ is the `resolution` parameter.
-* For Polygon and MultiPolygon type, the encoding is
-$z / r^2$, where $z$ is the area of overlap between the shape
-and the tile. 
-
 ## Supporting packages
 
 * `shapely`: Provides computations on geometric objects.
@@ -101,7 +87,7 @@ pip install geo-encodings
 
 ## Release History
 
-* 1.0.0: Coming soon
+* 1.0.0: Initial release
 
 ## Author and maintainers
 
@@ -109,8 +95,9 @@ pip install geo-encodings
 
 ## Contributing
 
+If you would like to contribute, do this: 
 1. Fork the repo (https://github.com/yourname/yourproject/fork)
-2. Create your feature branch (git checkout -b feature/fooBar)
-3. Commit your changes (git commit -am 'Add some fooBar')
-4. Push to the branch (git push origin feature/fooBar)
+2. Create your feature branch (git checkout -b feature/myFeatureBranch)
+3. Commit your changes (git commit -am 'add some new features')
+4. Push to the branch (git push origin feature/myFeatureBranch)
 5. Create a new Pull Request
