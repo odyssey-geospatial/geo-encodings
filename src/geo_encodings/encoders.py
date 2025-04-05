@@ -172,7 +172,7 @@ class DIVEncoder:
             shape: The shape to be encoded.
         """
         indicators = np.array([
-            1.0 if shapely.intersects(geom, tile) else 0.0
+            1.0 if shapely.intersects(shape, tile) else 0.0
             for tile in self.tiles
         ])
         iok = indicators > 0.5

@@ -2,7 +2,7 @@ import shapely
 import plotly
 from plotly.graph_objects import Scatter
 
-def draw_shape(geom:shapely.geometry, fig:plotly.graph_objs._figure.Figure, irow:int=1, icol:int=1, color:str='blue', name:str='shape', markersize:int=10, linewidth:int=5):
+def draw_shape(geom:shapely.geometry, fig:plotly.graph_objs.Figure, irow:int=1, icol:int=1, color:str='blue', name:str='shape', markersize:int=10, linewidth:int=5):
     """
     Add a shape to a plotly figure.
     
