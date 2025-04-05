@@ -1,6 +1,6 @@
 [project]
 name = "geo-encodings"
-version = "1.0.1"
+version = "1.0.2"
 description = "Encodings for geometric objects"
 authors = [
     {name = "John Collins", email = "john@odyssey-geospatial.com"}
