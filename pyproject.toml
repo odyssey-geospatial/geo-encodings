@@ -1,15 +1,13 @@
 [project]
 name = "geo-encodings"
+version = "1.0.0"
 description = "Encodings for geometric objects"
 authors = [
     {name = "John Collins", email = "john@odyssey-geospatial.com"}
 ]
-version = "1.0.0"
 readme = "README.md"
 license = {file = "LICENSE"}
-keywords = [
-    "geospatial", "artificial intelligence", "machine learning", "embeddings"
-]
+keywords = ["geospatial", "artificial intelligence", "machine learning", "encoding"]
 dependencies = [
     "shapely",
     "scipy", 
