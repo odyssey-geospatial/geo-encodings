@@ -61,16 +61,16 @@ The `geo-encodings` package implements a few different ways to encode shapes.
 
 MPP encoding involves laying out a grid of reference points 
 $\bf{r} = {r_i: i \in [1..n]}$
-over a rectangular domain.
+over a rectangular region.
 Then for a given shape $\bf{g}$, compute its distance $d_i$ to each reference point, 
 where "distance" is the Euclidean distance between the reference point and the closest point of the shape. 
 The apply negative exponential scaling to the distances:
-$\bf{e} = {e_i = \exp(-d_i / s): i \in [1 .. n]}$
+$e_i = \exp(-d_i / s)$
 where $s$ is the `scale` parameter of the MPP encoder.
 
 ### Discrete Indicator Vector (DIV) Encoding
 
-DIV encoding involves dividing a given domain into non-overlapping square "tiles".
+DIV encoding involves dividing a given region into non-overlapping square "tiles".
 An encoding for a shape is an indicator vector (0 or 1) indicating which tiles 
 it intersects.  
 
