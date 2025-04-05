@@ -13,7 +13,7 @@ as well as "multipart" types
 
 """
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __author__ = "John B Collins"
 
 from .encoders import MPPEncoder

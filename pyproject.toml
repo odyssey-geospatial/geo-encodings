@@ -1,18 +1,22 @@
 [project]
 name = "geo-encodings"
-version = "1.0.2"
+version = "1.0.3"
 description = "Encodings for geometric objects"
 authors = [
     {name = "John Collins", email = "john@odyssey-geospatial.com"}
 ]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "Apache 2.0"
 keywords = ["geospatial", "artificial intelligence", "machine learning", "encoding"]
 dependencies = [
     "shapely",
     "scipy", 
     "numpy"
 ]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python"
+]   
 
 [build-system]
 requires = ["flit_core >=3.11,<4"]
