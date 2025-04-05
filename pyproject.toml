@@ -1,12 +1,12 @@
 [project]
 name = "geo-encodings"
-version = "1.0.3"
+version = "1.0.4"
 description = "Encodings for geometric objects"
 authors = [
     {name = "John Collins", email = "john@odyssey-geospatial.com"}
 ]
 readme = "README.md"
-license = "Apache-2.0"
+license = {text = "Apache-2.0"}
 keywords = ["geospatial", "artificial intelligence", "machine learning", "encoding"]
 dependencies = [
     "shapely",
