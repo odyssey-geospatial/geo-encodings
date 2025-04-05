@@ -6,7 +6,7 @@ authors = [
     {name = "John Collins", email = "john@odyssey-geospatial.com"}
 ]
 readme = "README.md"
-license = "Apache 2.0"
+license = "Apache-2.0"
 keywords = ["geospatial", "artificial intelligence", "machine learning", "encoding"]
 dependencies = [
     "shapely",
