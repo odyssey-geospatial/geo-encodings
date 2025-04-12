@@ -16,31 +16,51 @@ class GeoEncoding:
     the components of a sparse vector. These can be returned either as a scipy sparse
     vector or as a numpy dense vector as desired.
 
+    If the `floor` parameter of the inpout encoder object is greater than zero, then
+    the data will be saved as a sparse vector.
+
     Args:
         encoder: The encoder object that produced the data
-        indices: Indices of non-zero elements of the encoding
-        values: Values of the non-zero elements of the encoding
+        values: Values of the elements of the encoding
     """
-    
-    def __init__(self, encoder, indices, values):
-        self.indices = indices
-        self.weights = values
-        self.full_size = len(encoder)
+
+    def __init__(self, encoder, values):
+        if encoder.floor > 0.0:
+            iok = values > encoder.floor
+            self.indices = indices[iok]
+            self.elements = values[iok]
+        else:
+            self.indices = None
+            self.elements = values
+        self.full_size = len(values)
+
+    def __len__(self):
+        return len(self.full_size)
 
     def sparse(self):
         """
         Return a sparse array representation of this encoding
         """
-        row_indices = np.full(len(self.indices), 0)
-        return csr_array((self.weights, (row_indices, self.indices)), shape=(1, self.full_size))
+        if self.indices is None:
+            # This isn't saved as a sparse array. But represent it as one anyway.
+            row_indices = np.full(self.full_size, 0) # all zeros
+            col_indices = np.arange(self.full_size)
+        else:
+            row_indices = np.full(len(self.indices), 0) # all zeros
+            col_indices = self.indices
+        return csr_array((self.elements, (row_indices, col_indices)), shape=(1, self.full_size))
 
     def values(self, override=False):
         """
         Return a dense vector representing this encoding.
         """
-        row_indices = np.full(len(self.indices), 0)
-        s = csr_array((self.weights, (row_indices, self.indices)), shape=(1, self.full_size))
-        return s.todense().ravel()
+        if self.indices is not None:
+            row_indices = np.full(len(self.indices), 0) # all zeros
+            s = csr_array((self.elements, (row_indices, self.indices)), shape=(1, self.full_size))
+            v = s.todense().ravel()
+        else:
+            v = self.elements
+        return v
 
 
 class MPPEncoder:
@@ -118,8 +138,8 @@ class MPPEncoder:
         ])
 
         # Create the encoding using only elements whose value exceeds the threshold.
-        iok = values > self.floor
-        e = GeoEncoding(self, self.ref_index[iok], values[iok])
+        e = GeoEncoding(self, values)
+
         return e
 
 
@@ -134,15 +154,21 @@ class DIVEncoder:
     Args:
         region: [x0, y0, x1, y1]: Coordinates of the lower-left and upper-right corners of a rectangular region.
         resolution: The size of the (square) tiles dividing the region.
+        sparse: If True, store as a sparse vector.
     """
 
-    def __init__(self, region:list[float], resolution:float):
+    def __init__(self, region:list[float], resolution:float, sparse:bool=False):
 
 
         # Collect the initialization parameters and do some rudimentary
         # calculations and re-formatting.
         self.x0, self.y0, self.x1, self.y1 = region
         self.resolution = resolution
+
+        # If this is set to anything above zero, then the encoding will be stored
+        # as a sparse vector. That will get taken care of in the "GeoEncoding" class 
+        # based on the value of the "floor" parameter. This sets it appropriately. 
+        self.floor = 0.5 if sparse else 0.0
 
         # Create a list of tiles.
         eps = self.resolution * 0.1
@@ -175,6 +201,5 @@ class DIVEncoder:
             1.0 if shapely.intersects(shape, tile) else 0.0
             for tile in self.tiles
         ])
-        iok = indicators > 0.5
-        e = GeoEncoding(self, self.tile_index[iok], indicators[iok])
+        e = GeoEncoding(self, indicators)
         return e

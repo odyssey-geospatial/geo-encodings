@@ -14,8 +14,8 @@
 
 git diff --cached --name-only --diff-filter=ACM | grep '\.ipynb$' | while read notebook; do
     echo "*** stripping output from $notebook (script .hooks/pre-commit)"
-    echo "copying original $notebook to keep/"
-    cp $notebook keep
+    #echo "copying original $notebook to keep/"
+    #cp $notebook keep
     jupyter nbconvert --clear-output --inplace "$notebook"
     git add "$notebook"
 done
