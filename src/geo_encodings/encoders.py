@@ -2,7 +2,6 @@
 
 import numpy as np
 import shapely
-import shapely.wkt
 from scipy.sparse import csr_array
 
 
@@ -27,7 +26,7 @@ class GeoEncoding:
     def __init__(self, encoder, values):
         if encoder.floor > 0.0:
             iok = values > encoder.floor
-            self.indices = indices[iok]
+            self.indices = np.nonzero(iok)[0]
             self.elements = values[iok]
         else:
             self.indices = None
@@ -35,7 +34,7 @@ class GeoEncoding:
         self.full_size = len(values)
 
     def __len__(self):
-        return len(self.full_size)
+        return self.full_size
 
     def sparse(self):
         """
@@ -108,10 +107,7 @@ class MPPEncoder:
         mm = np.meshgrid(xx, yy)
         ref_x = mm[0].ravel()
         ref_y = mm[1].ravel()
-        self.ref_points = [
-            shapely.wkt.loads('POINT(%.1f %.1f)' % (zx, zy))
-            for zx, zy in list(zip(ref_x, ref_y))
-        ]
+        self.ref_points = shapely.points(ref_x, ref_y)
         self.ref_x = ref_x
         self.ref_y = ref_y
         self.ref_index = np.arange(len(self.ref_points))
@@ -132,10 +128,8 @@ class MPPEncoder:
         """
 
         # Get the encoded values for each point.
-        values = np.array([
-            np.exp(-1.0 * shape.distance(ref_point) / self.scale)
-            for ref_point in self.ref_points
-        ])
+        d = shapely.distance(shape, self.ref_points)
+        values = np.exp(-d / self.scale)
 
         # Create the encoding using only elements whose value exceeds the threshold.
         e = GeoEncoding(self, values)
@@ -179,12 +173,7 @@ class DIVEncoder:
         mm = np.meshgrid(xx, yy)
         ref_x = mm[0].ravel()
         ref_y = mm[1].ravel()
-        self.tiles = []
-        for i in range(len(ref_x)):
-            x0, y0 = ref_x[i], ref_y[i]
-            x1, y1 = x0 + resolution, y0 + resolution
-            wkt = f"POLYGON(({x0} {y0}, {x1} {y0}, {x1} {y1}, {x0} {y1}, {x0} {y0}))"
-            self.tiles.append(shapely.from_wkt(wkt))
+        self.tiles = shapely.box(ref_x, ref_y, ref_x + resolution, ref_y + resolution)
         self.tile_index = np.arange(len(self))
 
     def __len__(self):
@@ -197,9 +186,6 @@ class DIVEncoder:
         Args:
             shape: The shape to be encoded.
         """
-        indicators = np.array([
-            1.0 if shapely.intersects(shape, tile) else 0.0
-            for tile in self.tiles
-        ])
+        indicators = shapely.intersects(shape, self.tiles).astype(np.float64)
         e = GeoEncoding(self, indicators)
         return e
