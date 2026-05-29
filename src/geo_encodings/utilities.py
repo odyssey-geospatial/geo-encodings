@@ -2,7 +2,7 @@ import shapely
 import plotly
 from plotly.graph_objects import Scatter
 
-def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, icol:int=1, color:str='blue', name:str='shape', markersize:int=10, linewidth:int=5):
+def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, icol:int=1, color:str='blue', name:str='shape', markersize:int=10, linewidth:int=5, opacity:float=0.1, showlegend=True):
     """
     Add a shape to a plotly figure.
     
@@ -15,6 +15,7 @@ def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, 
     	name: Name to use in the plot legend.
         markersize: Size of any points to be drawn.
         linewidth: Width of any lines to be drawn.
+        opacity: Opacity for polygon fills.
     	
     This function adds a `shapely.Geometry` object to a `plotly` plot.
     """
@@ -26,7 +27,8 @@ def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, 
         yy = [geom.xy[1][0]]
         trace = Scatter(
             x=xx, y=yy, name=name, 
-            mode='markers', marker={'color': color, 'size': markersize}
+            mode='markers', marker={'color': color, 'size': markersize},
+            showlegend=showlegend
         )
         fig.append_trace(trace, irow, icol)
         
@@ -35,7 +37,8 @@ def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, 
         yy = [z.xy[1][0] for z in geom.geoms]
         trace = Scatter(
             x=xx, y=yy, name=name, 
-            mode='markers', marker={'color': color, 'size': markersize}
+            mode='markers', marker={'color': color, 'size': markersize},
+            showlegend=showlegend
         )
         fig.append_trace(trace, irow, icol)
         
@@ -46,7 +49,7 @@ def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, 
         trace = Scatter(
             x=xx, y=yy, name=name, 
             mode='lines', marker={'color': color, 'size': markersize},
-            line={'width': linewidth}
+            line={'width': linewidth}, showlegend=showlegend
         )
         fig.append_trace(trace, irow, icol)
         
@@ -60,7 +63,7 @@ def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, 
         trace = Scatter(
             x=xx, y=yy, name=name, 
             mode='lines', marker={'color': color, 'size': markersize},
-            line={'width': linewidth}
+            line={'width': linewidth}, showlegend=showlegend
         )
         fig.append_trace(trace, irow, icol)
 
@@ -70,7 +73,8 @@ def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, 
         yy = [z[1] for z in coords]
         trace = Scatter(
             x=xx, y=yy, name=name, 
-            mode='lines', marker={'color': color}, fill='toself'
+            mode='lines', marker={'color': color, 'opacity': opacity}, fill='toself',
+            showlegend=showlegend
         )
         fig.append_trace(trace, irow, icol)
 
@@ -82,7 +86,8 @@ def draw_shape(geom:shapely.Geometry, fig:plotly.graph_objs.Figure, irow:int=1, 
             yy = [z[1] for z in coords]
             trace =Scatter(
                 x=xx, y=yy, name=name, 
-                mode='lines', marker={'color': color}, fill='toself'
+                mode='lines', marker={'color': color, 'opacity': opacity}, fill='toself',
+                showlegend=showlegend
             )
             fig.append_trace(trace, irow, icol)
 
